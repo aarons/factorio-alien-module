@@ -24,7 +24,7 @@ if (settings.startup["alien-module-ore-conversion"].value) then
 			energy_required = 10,
 			ingredients = { { type = "item", name = "artifact-ore", amount = 1 } },
 			results = { { type = "item", name = "iron-ore", amount = 5 } },
-			auto_recycle = false
+			auto_recycle = not settings.startup["alien-module-ore-recycle-to-alien"].value
 		}
 	})
 
@@ -37,7 +37,7 @@ if (settings.startup["alien-module-ore-conversion"].value) then
 			energy_required = 10,
 			ingredients = { { type = "item", name = "artifact-ore", amount = 1 } },
 			results = { { type = "item", name = "copper-ore", amount = 5 } },
-			auto_recycle = false
+			auto_recycle = not settings.startup["alien-module-ore-recycle-to-alien"].value
 		}
 	})
 
@@ -50,7 +50,7 @@ if (settings.startup["alien-module-ore-conversion"].value) then
 			energy_required = 10,
 			ingredients = { { type = "item", name = "artifact-ore", amount = 1 } },
 			results = { { type = "item", name = "stone", amount = 5 } },
-			auto_recycle = false
+			auto_recycle = not settings.startup["alien-module-ore-recycle-to-alien"].value
 		}
 	})
 
@@ -63,7 +63,7 @@ if (settings.startup["alien-module-ore-conversion"].value) then
 			energy_required = 20,
 			ingredients = { { type = "item", name = "artifact-ore", amount = 2 } },
 			results = { { type = "item", name = "uranium-ore", amount = 1 } },
-			auto_recycle = false
+			auto_recycle = not settings.startup["alien-module-ore-recycle-to-alien"].value
 		}
 	})
 
@@ -76,7 +76,7 @@ if (settings.startup["alien-module-ore-conversion"].value) then
 			energy_required = 10,
 			ingredients = { { type = "item", name = "artifact-ore", amount = 1 } },
 			results = { { type = "item", name = "coal", amount = 5 } },
-			auto_recycle = false
+			auto_recycle = not settings.startup["alien-module-ore-recycle-to-alien"].value
 		}
 	})
 end
