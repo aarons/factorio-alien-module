@@ -499,3 +499,8 @@ commands.add_command("log_am", nil, function(command)
 		log(name .. "  Player: " .. player.name .. ", force: " .. player.force.name .. ", module level: " .. storage.currentmodulelevel[player.force.name] .. ", current module level: " .. modulelevel(player.force.name) .. ", kill count: " .. storage.killcount[player.force.name])
 	end
 end)
+
+-- Configuration change handler for ore conversion recipes
+script.on_configuration_changed(function(event)
+	require("prototypes.recipe.ore-conversions").update_recipes(event)
+end)

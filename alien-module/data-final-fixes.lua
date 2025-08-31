@@ -43,26 +43,14 @@ if (settings.startup["alien-module-productivity-everything"].value) then
     end
 end
 
--- Ore conversion recipes based on granular settings
-local nauvis_ores = {
-    ["iron-ore"] = true,
-    ["copper-ore"] = true,
-    ["stone"] = true,
-    ["coal"] = true,
-    ["uranium-ore"] = true
-}
+-- Modded ore conversion recipes based on dynamic discovery
+local ore_categories = require("prototypes.recipe.ore-conversions")
+local nauvis_ores = ore_categories.nauvis_ores
+local vulcanus_ores = ore_categories.vulcanus_ores
+local fulgora_scrap_ores = ore_categories.fulgora_scrap_ores
 
-local vulcanus_ores = {
-    ["calcite"] = true,
-    ["tungsten-ore"] = true
-}
-
-local fulgora_scrap_ores = {
-    ["scrap"] = true
-}
-
--- Function to create conversion recipe
-local function create_ore_recipe(ore_name)
+-- Function to create conversion recipe for modded ores
+local function create_modded_ore_recipe(ore_name)
     local recipe_name = "alien-ore-to-" .. ore_name
     -- Skip if recipe already exists
     if data.raw.recipe[recipe_name] then
@@ -87,21 +75,23 @@ local function create_ore_recipe(ore_name)
     })
 end
 
--- Collect all mineable ore names from resources
+-- Helper function to normalize minable results into a consistent format
+local function get_minable_results(minable_data)
+    if minable_data.results then
+        return minable_data.results
+    elseif minable_data.result then
+        return {{name = minable_data.result, amount = minable_data.count or 1}}
+    end
+    return {}
+end
+
+-- Collect all mineable ore names from resources for modded content
 local all_ores = {}
 for _, resource_data in pairs(data.raw.resource) do
     if resource_data.minable then
-        if resource_data.minable.results then
-            -- Handle multiple results format
-            for _, result in pairs(resource_data.minable.results) do
-                local ore_name = result.name or result[1]
-                if ore_name and data.raw.item[ore_name] then
-                    all_ores[ore_name] = true
-                end
-            end
-        elseif resource_data.minable.result then
-            -- Handle single result format
-            local ore_name = resource_data.minable.result
+        local results = get_minable_results(resource_data.minable)
+        for _, result in pairs(results) do
+            local ore_name = result.name or result[1]
             if ore_name and data.raw.item[ore_name] then
                 all_ores[ore_name] = true
             end
@@ -109,20 +99,19 @@ for _, resource_data in pairs(data.raw.resource) do
     end
 end
 
--- Generate recipes based on settings
+-- Generate recipes for modded ores only
 for ore_name, _ in pairs(all_ores) do
     local should_create = false
 
     if nauvis_ores[ore_name] then
-        -- skip, these are handled in data.lua
-        -- useful to keep the check here to filter nauvis ores out from later checks
+        -- Skip base game Nauvis ores (handled in ore-conversions.lua)
         should_create = false
-    -- Vulcanus
-    elseif settings.startup["alien-module-vulcanus-ore-conversion"].value and vulcanus_ores[ore_name] then
-        should_create = true
-    -- Fulgora Scrap
-    elseif settings.startup["alien-module-fulgora-scrap-conversion"].value and fulgora_scrap_ores[ore_name] then
-        should_create = true
+    elseif vulcanus_ores[ore_name] then
+        -- Skip Space Age Vulcanus ores (handled in ore-conversions.lua)
+        should_create = false
+    elseif fulgora_scrap_ores[ore_name] then
+        -- Skip Space Age Fulgora scrap (handled in ore-conversions.lua)
+        should_create = false
     -- Modded Scrap
     elseif settings.startup["alien-module-modded-scrap-conversion"].value and string.find(string.lower(ore_name), "scrap") then
         should_create = true
@@ -132,6 +121,6 @@ for ore_name, _ in pairs(all_ores) do
     end
 
     if should_create then
-        create_ore_recipe(ore_name)
+        create_modded_ore_recipe(ore_name)
     end
 end

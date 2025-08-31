@@ -9,6 +9,7 @@ require("prototypes.item-group.item-groups-module")
 
 require("prototypes.recipe.alien-module")
 require("prototypes.recipe.alien-warfare")
+require("prototypes.recipe.ore-conversions")
 
 require("prototypes.technology.technology")
 require("prototypes.sounds")
