@@ -1,4 +1,9 @@
 ---------------------------------------------------------------------------------------------------
+Version: 2.1.2
+  Changes:
+    - Added dynamic ore conversion recipes to support modded ores
+    - Added settings to configure which ore conversions should be enabled
+---------------------------------------------------------------------------------------------------
 Version: 2.1.1
   Changes:
     - Added setting for how ore conversion recipes should recycle

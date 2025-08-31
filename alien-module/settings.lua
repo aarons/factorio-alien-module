@@ -1,15 +1,43 @@
 data:extend({
 	{
 		type = "bool-setting",
-		name = "alien-module-ore-conversion",
+		name = "alien-module-nauvis-ore-conversion",
 		order = "a",
 		setting_type = "startup",
 		default_value = true
 	},
 	{
 		type = "bool-setting",
-		name = "alien-module-ore-recycle-to-alien",
+		name = "alien-module-vulcanus-ore-conversion",
 		order = "aa",
+		setting_type = "startup",
+		default_value = true
+	},
+	{
+		type = "bool-setting",
+		name = "alien-module-fulgora-scrap-conversion",
+		order = "aaa",
+		setting_type = "startup",
+		default_value = false
+	},
+	{
+		type = "bool-setting",
+		name = "alien-module-modded-ore-conversion",
+		order = "aaaa",
+		setting_type = "startup",
+		default_value = false
+	},
+	{
+		type = "bool-setting",
+		name = "alien-module-modded-scrap-conversion",
+		order = "aaaaa",
+		setting_type = "startup",
+		default_value = false
+	},
+	{
+		type = "bool-setting",
+		name = "alien-module-ore-recycle-to-alien",
+		order = "aaaaaa",
 		setting_type = "startup",
 		default_value = false
 	},

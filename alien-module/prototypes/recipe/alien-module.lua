@@ -14,7 +14,7 @@ data:extend({
 	}
 })
 
-if (settings.startup["alien-module-ore-conversion"].value) then
+if (settings.startup["alien-module-nauvis-ore-conversion"].value) then
 	-- make iron ore from alien ore --
 	data:extend({
 		{
