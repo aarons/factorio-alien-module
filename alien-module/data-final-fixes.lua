@@ -79,7 +79,7 @@ local function create_ore_recipe(ore_name)
             results = { { type = "item", name = ore_name, amount = 1 } },
             auto_recycle = not settings.startup["alien-module-ore-recycle-to-alien"].value,
             localised_name = {
-                "?",  -- Fallback operator
+                "?",  -- fallback option
                 {"recipe-name.alien-ore-conversion-template", {"item-name." .. ore_name}},
                 {"recipe-name.alien-ore-conversion-template", ore_name}
             }
@@ -113,24 +113,21 @@ end
 for ore_name, _ in pairs(all_ores) do
     local should_create = false
 
-    -- Check if it's a Nauvis ore
-    if settings.startup["alien-module-nauvis-ore-conversion"].value and nauvis_ores[ore_name] then
-        should_create = true
-    -- Check if it's a Vulcanus ore
+    if nauvis_ores[ore_name] then
+        -- skip, these are handled in data.lua
+        -- useful to keep the check here to filter nauvis ores out from later checks
+        should_create = false
+    -- Vulcanus
     elseif settings.startup["alien-module-vulcanus-ore-conversion"].value and vulcanus_ores[ore_name] then
         should_create = true
-    -- Check if it's Fulgora scrap
+    -- Fulgora Scrap
     elseif settings.startup["alien-module-fulgora-scrap-conversion"].value and fulgora_scrap_ores[ore_name] then
         should_create = true
-    -- Check if it's a modded scrap ore
-    elseif settings.startup["alien-module-modded-scrap-conversion"].value and
-           not nauvis_ores[ore_name] and not vulcanus_ores[ore_name] and not fulgora_scrap_ores[ore_name] and
-           string.find(string.lower(ore_name), "scrap") then
+    -- Modded Scrap
+    elseif settings.startup["alien-module-modded-scrap-conversion"].value and string.find(string.lower(ore_name), "scrap") then
         should_create = true
-    -- Check if it's a regular modded ore
-    elseif settings.startup["alien-module-modded-ore-conversion"].value and
-           not nauvis_ores[ore_name] and not vulcanus_ores[ore_name] and not fulgora_scrap_ores[ore_name] and
-           not string.find(string.lower(ore_name), "scrap") then
+    -- Modded Ores
+    elseif settings.startup["alien-module-modded-ore-conversion"].value then
         should_create = true
     end
 
