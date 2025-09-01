@@ -1,3 +1,5 @@
+local ore_conversions = require("control-ore-conversions")
+
 script.on_init(function()
 	if storage.ignoredalienmodulefactions == nil then
 		storage.ignoredalienmodulefactions = { enemy = true, neutral = true, _ABANDONED_ = true, _DESTROYED_ = true }
@@ -502,5 +504,5 @@ end)
 
 -- Configuration change handler for ore conversion recipes
 script.on_configuration_changed(function(event)
-	require("prototypes.recipe.ore-conversions").update_recipes(event)
+	ore_conversions.update_recipes(event)
 end)

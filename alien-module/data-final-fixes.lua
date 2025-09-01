@@ -75,52 +75,46 @@ local function create_modded_ore_recipe(ore_name)
     })
 end
 
--- Helper function to normalize minable results into a consistent format
-local function get_minable_results(minable_data)
-    if minable_data.results then
-        return minable_data.results
-    elseif minable_data.result then
-        return {{name = minable_data.result, amount = minable_data.count or 1}}
-    end
-    return {}
-end
-
 -- Collect all mineable ore names from resources for modded content
 local all_ores = {}
 for _, resource_data in pairs(data.raw.resource) do
-    if resource_data.minable then
-        local results = get_minable_results(resource_data.minable)
-        for _, result in pairs(results) do
-            local ore_name = result.name or result[1]
-            if ore_name and data.raw.item[ore_name] then
-                all_ores[ore_name] = true
-            end
+    if not resource_data.minable then
+        goto continue
+    end
+
+    -- normalize the data structure (mineable resources can return 1 or more ores)
+    local results
+    if resource_data.minable.results then
+        results = resource_data.minable.results
+    elseif resource_data.minable.result then
+        results = {{name = resource_data.minable.result, amount = resource_data.minable.count or 1}}
+    else
+        goto continue
+    end
+
+    for _, result in pairs(results) do
+        local ore_name = result.name or result[1]
+        if ore_name and data.raw.item[ore_name] then
+            all_ores[ore_name] = true
         end
     end
+
+    ::continue::
 end
 
 -- Generate recipes for modded ores only
 for ore_name, _ in pairs(all_ores) do
-    local should_create = false
-
-    if nauvis_ores[ore_name] then
-        -- Skip base game Nauvis ores (handled in ore-conversions.lua)
-        should_create = false
-    elseif vulcanus_ores[ore_name] then
-        -- Skip Space Age Vulcanus ores (handled in ore-conversions.lua)
-        should_create = false
-    elseif fulgora_scrap_ores[ore_name] then
-        -- Skip Space Age Fulgora scrap (handled in ore-conversions.lua)
-        should_create = false
-    -- Modded Scrap
-    elseif settings.startup["alien-module-modded-scrap-conversion"].value and string.find(string.lower(ore_name), "scrap") then
-        should_create = true
-    -- Modded Ores
-    elseif settings.startup["alien-module-modded-ore-conversion"].value then
-        should_create = true
+    -- Skip base game ores (handled in ore-conversions.lua)
+    if nauvis_ores[ore_name] or vulcanus_ores[ore_name] or fulgora_scrap_ores[ore_name] then
+        goto continue
     end
 
-    if should_create then
+    -- Check if we should create recipe for this ore
+    if settings.startup["alien-module-modded-scrap-conversion"].value and string.find(string.lower(ore_name), "scrap") then
+        create_modded_ore_recipe(ore_name)
+    elseif settings.startup["alien-module-modded-ore-conversion"].value then
         create_modded_ore_recipe(ore_name)
     end
+
+    ::continue::
 end

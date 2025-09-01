@@ -1,0 +1,9 @@
+# Archives
+*.zip
+archive/
+
+# Claude related files
+claude*
+CLAUDE*
+.claude*
+*.claude
