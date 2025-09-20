@@ -1,4 +1,58 @@
-local ore_conversions = require("control-ore-conversions")
+-- Ore categorization data for runtime recipe management
+local nauvis_ores = {
+    ["iron-ore"] = true,
+    ["copper-ore"] = true,
+    ["stone"] = true,
+    ["coal"] = true,
+    ["uranium-ore"] = true
+}
+
+local vulcanus_ores = {
+    ["calcite"] = true,
+    ["tungsten-ore"] = true
+}
+
+local fulgora_scrap_ores = {
+    ["scrap"] = true
+}
+
+-- Function to update ore conversion recipe states based on current settings
+local function update_ore_conversion_recipes(event)
+	-- Only process if startup settings have changed
+	if not event or not event.mod_changes then
+		return
+	end
+
+	-- Update player force recipes only
+	local force = game.forces.player
+	if force then
+		-- Find all ore conversion recipes for this force
+		for recipe_name, recipe in pairs(force.recipes) do
+			if string.match(recipe_name, "^alien%-ore%-to%-") then
+				local ore_name = string.match(recipe_name, "^alien%-ore%-to%-(.+)$")
+				if ore_name then
+					local setting_name
+					if nauvis_ores[ore_name] then
+						setting_name = "alien-module-nauvis-ore-conversion"
+					elseif vulcanus_ores[ore_name] then
+						setting_name = "alien-module-vulcanus-ore-conversion"
+					elseif fulgora_scrap_ores[ore_name] then
+						setting_name = "alien-module-fulgora-scrap-conversion"
+					elseif string.find(string.lower(ore_name), "scrap") then
+						setting_name = "alien-module-modded-scrap-conversion"
+					else
+						setting_name = "alien-module-modded-ore-conversion"
+					end
+					local should_be_enabled = settings.startup[setting_name] and settings.startup[setting_name].value
+
+					if should_be_enabled ~= recipe.enabled then
+						recipe.enabled = should_be_enabled
+					end
+				end
+			end
+		end
+	end
+end
 
 script.on_init(function()
 	if storage.ignoredalienmodulefactions == nil then
@@ -504,5 +558,5 @@ end)
 
 -- Configuration change handler for ore conversion recipes
 script.on_configuration_changed(function(event)
-	ore_conversions.update_recipes(event)
+	update_ore_conversion_recipes(event)
 end)
